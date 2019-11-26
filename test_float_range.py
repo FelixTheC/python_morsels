@@ -82,7 +82,7 @@ class FloatRangeTests(unittest.TestCase):
         self.assertNotEqual(type(response), list)
         self.assertNotEqual(type(response), tuple)
 
-    @unittest.expectedFailure
+    # @unittest.expectedFailure
     def test_has_length(self):
         self.assertEqual(len(float_range(100)), 100)
         self.assertEqual(len(float_range(1, 100)), 99)
@@ -92,7 +92,7 @@ class FloatRangeTests(unittest.TestCase):
         self.assertEqual(len(float_range(11, 1.2, -2)), 5)
         self.assertEqual(len(float_range(11, 1.2, 2)), 0)
 
-    @unittest.expectedFailure
+    # @unittest.expectedFailure
     def test_reversed(self):
         r = reversed(float_range(0.5, 7, 0.75))
         self.assertEqual(
@@ -102,7 +102,7 @@ class FloatRangeTests(unittest.TestCase):
         big_num = 1000000
         self.assertEqual(next(reversed(float_range(big_num))), big_num-1)
 
-    @unittest.expectedFailure
+    # @unittest.expectedFailure
     def test_equality(self):
         self.assertEqual(float_range(0, 5, 0.5), float_range(0, 5, 0.5))
         self.assertEqual(float_range(5, 5), float_range(10, 10))
