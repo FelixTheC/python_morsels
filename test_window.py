@@ -1,6 +1,6 @@
 import unittest
 
-from window import window
+from window_solution import window
 
 
 class WindowTests(unittest.TestCase):
