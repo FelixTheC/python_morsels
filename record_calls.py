@@ -4,19 +4,22 @@
 @created: 23.12.19
 @author: felix
 """
+from functools import wraps
+
+from dataclasses import dataclass
+
 NO_RETURN = None
 
 
+@dataclass
 class RecordValues:
-
-    def __init__(self, a, k, rv, ex=None):
-        self.args = a
-        self.kwargs = k
-        self.return_value = rv
-        self.exception = ex
+    args: tuple
+    kwargs: dict
+    return_value: any
+    exception: Exception
 
 
-class record_calls:
+class RecordCalls:
     call_count = 0
 
     def __init__(self, *args, **kwargs):
@@ -32,13 +35,33 @@ class record_calls:
             ex = e
         finally:
             self.call_count += 1
-            self.calls.append(RecordValues(a=args, k=kwargs, rv=res, ex=ex))
+            self.calls.append(RecordValues(args, kwargs, res, ex))
         if ex is not None:
             raise ex
         return res
 
     def __getattr__(self, item):
         return getattr(self, item)
+
+
+def record_calls(func):
+    @wraps(func)
+    def inner(*args, **kwargs):
+        result = ex = None
+        try:
+            result = func(*args, **kwargs)
+        except Exception as e:
+            ex = e
+        finally:
+            inner.call_count += 1
+            inner.calls.append(RecordValues(args, kwargs, result, ex))
+        if ex is not None:
+            raise ex
+        else:
+            return result
+    inner.call_count = 0
+    inner.calls = []
+    return inner
 
 
 if __name__ == '__main__':

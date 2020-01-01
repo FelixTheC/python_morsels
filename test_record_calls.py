@@ -66,7 +66,7 @@ class RecordCallsTests(unittest.TestCase):
         self.assertEqual(my_func2.call_count, 1)
 
     # To test the Bonus part of this exercise, comment out the following line
-    @unittest.expectedFailure
+    # @unittest.expectedFailure
     def test_docstring_and_name_preserved(self):
         import pydoc
         decorated = record_calls(example)
