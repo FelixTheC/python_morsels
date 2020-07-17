@@ -86,6 +86,12 @@ class EasyDictTests(unittest.TestCase):
         with self.assertRaises(AttributeError):
             d.greeting_1
 
+    def test_pythonistacafe(self):
+        testcases = {1: '_1', None: 'None', 2: 'True', 3: 'False'}
+        print(testcases)
+        d = EasyDict(testcases)
+        self.assertEqual(d[1], '1')
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
