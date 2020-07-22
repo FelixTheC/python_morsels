@@ -4,61 +4,47 @@
 @created: 23.10.19
 @author: felix
 """
-from dataclasses import dataclass
+from collections.abc import Sequence
+from collections.abc import MutableSet
 
 
-@dataclass
-class OrderedSet:
-    __vals: list
-    __counter = 0
+class OrderedSet(Sequence, MutableSet):
 
-    def __init__(self, arg):
-        self.__vals = []
-        self.__sort_set__(arg)
+    """Set-like object that maintains insertion order of items."""
 
-    def __sort_set__(self, val):
-        [self.__vals.append(i) for i in val if i not in self.__vals]
+    def __init__(self, iterable):
+        self.items = set()
+        self.order = []
+        self |= iterable
 
     def __contains__(self, item):
-        return item in self.__vals
-
-    def __getitem__(self, item):
-        return self.__vals[item]
+        return item in self.items
 
     def __len__(self):
-        return len(self.__vals)
+        return len(self.items)
 
-    def __iter__(self):
-        return self
+    def __getitem__(self, index):
+        return self.order[index]
 
-    def __next__(self):
-        try:
-            r = self.__vals[self.__counter]
-            self.__counter += 1
-            return r
-        except IndexError:
-            raise StopIteration
+    def add(self, item):
+        if item not in self.items:
+            self.order.append(item)
+        self.items.add(item)
+
+    def discard(self, item):
+        if item in self.items:
+            self.order.remove(item)
+            self.items.remove(item)
 
     def __eq__(self, other):
-        if isinstance(other, OrderedSet):
-            return self.__vals == other.__vals
-        else:
-            return set(self.__vals) == other
-
-    def add(self, other):
-        if other not in self.__vals:
-            vals = self.__vals
-            vals.append(other)
-            self.__sort_set__(vals)
-
-    def discard(self, other):
-        if other in self.__vals:
-            vals = self.__vals
-            vals.remove(other)
-            self.__sort_set__(vals)
+        if isinstance(other, type(self)):
+            return (
+                    len(self) == len(other) and
+                    all(x == y for x, y in zip(self, other))
+            )
+        return super().__eq__(other)
 
 
 if __name__ == '__main__':
     numbers = OrderedSet([1, 2, 3])
     numbers.discard(4)
-    print(numbers)
